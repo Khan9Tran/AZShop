@@ -1,5 +1,6 @@
-# Nhóm 3 - Dự án AZSHOP
+# Nhóm 5 - Dự án AZSHOP - Phiên bản sửa lỗi bảo mật môn BẢO MẬT WEB
 AZShop là một website thương mại điện tử đa chức năng, được xây dựng trên nền tảng Servlet, JSP/JSTL, Bootstrap, JDBC, SQL Server, và Decorator Seitemest. Nó mang lại trải nghiệm mua sắm trực tuyến toàn diện cho cả khách hàng và người bán hàng.
+ĐÂy
 ## Thành viên
 
 1. **MSSV:** 21110497
@@ -8,25 +9,9 @@ AZShop là một website thương mại điện tử đa chức năng, được 
 2. **MSSV:** 21110473
    - **Họ tên:** Nguyễn Thanh Huy
 
-3. **MSSV:** 21110492
-   - **Họ tên:** Đỗ Thanh Khang
+3. **MSSV:** 21110538
+   - **Họ tên:** Nguyễn Thiện Luân
 
-4. **MSSV:** 21110374
-   - **Họ tên:** Lê Nguyễn Bảo
-
-5. **MSSV:** 21110448
-   - **Họ tên:** Trần Thanh Hiếu
-
-6. **MSSV:** 20110733
-   - **Họ tên:** Võ Đinh Quốc Thuật
-
-7. **MSSV:** 20110750
-   - **Họ tên:** Hoàng Hạ Vũ
-
-8. **MSSV:** 21110637
-   - **Họ tên:** Nguyễn Thiện Tâm
-9. **MSSV:** 21110424
-   - **Họ tên:** Hồ Phương Đông
 
 ## Môi trường phát triển
 - **Máy chủ web:** Apache Tomcat
