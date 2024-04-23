@@ -19,6 +19,7 @@ import com.azshop.services.IImageService;
 import com.azshop.services.ImageServiceImpl;
 import com.azshop.utils.Constant;
 import com.google.gson.JsonObject;
+import org.owasp.encoder.Encode;
 
 
 @SuppressWarnings("serial")
@@ -27,7 +28,9 @@ public class ImageController extends HttpServlet {
 	IImageService imageService = new ImageServiceImpl();
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String fileName = req.getParameter("fname");
+		req.setCharacterEncoding("UTF-8");
+		resp.setCharacterEncoding("UTF-8");
+		String fileName = Encode.forHtml(req.getParameter("fname"));
 		File file = new File(Constant.DIR + "/" + fileName);
 		resp.setContentType("image/jpeg");
 		if (file.exists())

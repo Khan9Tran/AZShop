@@ -38,7 +38,11 @@ import com.azshop.services.ImageServiceImpl;
 import com.azshop.services.ProductServiceImpl;
 import com.azshop.services.StoreServiceImpl;
 import com.azshop.services.StyleServiceImpl;
+import com.azshop.utils.CheckValid;
 import com.azshop.utils.Constant;
+import com.opensymphony.module.sitemesh.tapestry.Util;
+import org.owasp.encoder.Encode;
+
 
 
 @WebServlet(urlPatterns = {"/customer/search", "/guest/search"})
@@ -114,16 +118,27 @@ public class searchController extends HttpServlet {
 			
 			else if (url.contains("/guest/search")) request.setAttribute("role", "guest");
 			
-			String style = request.getParameter("styleId");
-			String action = request.getParameter("action");
+			String style = Encode.forHtml(request.getParameter("styleId"));
+			String page = Encode.forHtml(request.getParameter("page"));
+			String categoryIdTmp = Encode.forHtml(request.getParameter("categoryId"));
+			String action = Encode.forHtml(request.getParameter("action"));
 			int styleTmp = -1;
-			if (style != null) {
-				styleTmp = Integer.parseInt(style);
+			try {
+				if (style != null) {
+					styleTmp = Integer.parseInt(style);
+				}
 			}
-			String page = request.getParameter("page");
+			catch (Exception e) {
+				// TODO: handle exception
+			}
 			int pageNumber = 1;
-			if (page != null)
-				pageNumber = Integer.parseInt(page);
+			try {
+				if (page != null)
+					pageNumber = Integer.parseInt(page);
+				}
+			catch (Exception e) {
+				// TODO: handle exception
+			}
 			if (action != null)
 			{
 				if (action.equals("left"))
@@ -136,9 +151,16 @@ public class searchController extends HttpServlet {
 					pageNumber = pageNumber + 1;
 				}
 			}
-			
-	        String keyword = request.getParameter("searchTerm");
-	        int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+			String keyword = ""; 
+			if (CheckValid.isValidInput(request.getParameter("searchTerm")))
+				keyword = request.getParameter("searchTerm");
+			keyword = Encode.forHtml(keyword);
+	        int categoryId = 0;
+	        try {
+	        	categoryId = Integer.parseInt(categoryIdTmp);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 	        List<ProductModel> productModels = productService.search(keyword, categoryId, -1, -1, styleTmp,pageNumber,6);
 	        if (productModels.size() == 0 && pageNumber!= 1)
 	        {
