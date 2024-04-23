@@ -29,18 +29,27 @@ public class ImageController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		resp.setCharacterEncoding("UTF-8");
-		String fileName = Encode.forHtml(req.getParameter("fname"));
-		File file = new File(Constant.DIR + "/" + fileName);
-		resp.setContentType("image/jpeg");
-		if (file.exists())
-		{
-			IOUtils.copy(new FileInputStream(file),resp.getOutputStream());
+        resp.setCharacterEncoding("UTF-8");
+        resp.setHeader("X-Content-Type-Options", "nosniff");
+       try {
+    	   String fileName = Encode.forHtml(req.getParameter("fname"));
+           File file = new File(Constant.DIR + "/" + fileName);
+           resp.setContentType("image/jpeg");
+
+           if (file.exists()) {
+               IOUtils.copy(new FileInputStream(file), resp.getOutputStream());
+           } else 
+           {
+        	   System.out.println("File not found: " + fileName);
+        	   resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+           } 
+       }
+       	catch (Exception e) {
+				System.out.println("File not found ");
+		
+		        // Trả về lỗi 404 cho người dùng
+		        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
 		}
-		else {
-			 System.out.println("File not found: " + file.getAbsolutePath());
-	         resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
-		}
-	}
+       }
 
 }
