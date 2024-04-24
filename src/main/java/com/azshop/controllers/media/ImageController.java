@@ -40,15 +40,15 @@ public class ImageController extends HttpServlet {
                IOUtils.copy(new FileInputStream(file), resp.getOutputStream());
            } else 
            {
-        	   System.out.println("File not found: " + fileName);
-        	   resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+        	   System.out.println("File not found ");
+       		
+        	   req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
            } 
        }
        	catch (Exception e) {
 				System.out.println("File not found ");
 		
-		        // Trả về lỗi 404 cho người dùng
-		        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+				req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
 		}
        }
 

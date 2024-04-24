@@ -8,12 +8,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' https://maxcdn.bootstrapcdn.com;
-    style-src 'self' https://maxcdn.bootstrapcdn.com https://fonts.googleapis.com;
-    font-src 'self' https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com https://fonts.googleapis.com;
-">
+
 
 
 
@@ -60,12 +55,10 @@
 
 	<!-- jQuery Plugins -->
 	<script src="<c:url value="/templates/guest/js/jquery.min.js"></c:url>"></script>
-<<<<<<< HEAD
 	<!-- JQuery phải được load trước do các tệp js khác có dùng đến nó -->
 	
 	<script src="<c:url value="/templates/guest/js/slick.min.js"></c:url>"></script>
-=======
->>>>>>> 22ec7a95aea185bd99bf846c71de3cd41a08e75f
+
 	<script src="<c:url value="/templates/guest/js/bootstrap.min.js"></c:url>"></script>
 	<script src="<c:url value="/templates/guest/js/slick.min.js"></c:url>"></script>	
 	<script src="<c:url value="/templates/guest/js/nouislider.min.js"></c:url>"></script>
