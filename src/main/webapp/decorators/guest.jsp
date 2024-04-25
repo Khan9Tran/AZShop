@@ -8,6 +8,10 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 <title>Electro - HTML Ecommerce Template</title>
@@ -40,12 +44,6 @@
 <link href="<c:url value="/templates/guest/css/style.css" />"
 	rel="stylesheet" type="text/css">
 
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
 </head>
 <body>
 	<%@ include file="/common/guest/header.jsp"%>
@@ -57,12 +55,10 @@
 
 	<!-- jQuery Plugins -->
 	<script src="<c:url value="/templates/guest/js/jquery.min.js"></c:url>"></script>
-<<<<<<< HEAD
 	<!-- JQuery phải được load trước do các tệp js khác có dùng đến nó -->
 	
 	<script src="<c:url value="/templates/guest/js/slick.min.js"></c:url>"></script>
-=======
->>>>>>> 22ec7a95aea185bd99bf846c71de3cd41a08e75f
+
 	<script src="<c:url value="/templates/guest/js/bootstrap.min.js"></c:url>"></script>
 	<script src="<c:url value="/templates/guest/js/slick.min.js"></c:url>"></script>	
 	<script src="<c:url value="/templates/guest/js/nouislider.min.js"></c:url>"></script>

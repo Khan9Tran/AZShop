@@ -50,6 +50,7 @@ public class AccountController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html;charset=UTF-8");
+		resp.setHeader("X-Content-Type-Options", "nosniff");
 		req.setCharacterEncoding("UTF-8");
 		resp.setCharacterEncoding("UTF-8");
 		String url = req.getRequestURI().toString();
@@ -266,6 +267,7 @@ public class AccountController extends HttpServlet {
 		String url = req.getRequestURI().toString();
 		resp.setHeader("X-Frame-Options", "DENY");
 		resp.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
+		resp.setHeader("X-Content-Type-Options", "nosniff");
 		if (url.contains("register-customer")) {
 			postRegister(req, resp);
 		} else if (url.contains("verify-customer")) {

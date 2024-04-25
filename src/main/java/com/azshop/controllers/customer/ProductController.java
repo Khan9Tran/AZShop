@@ -71,7 +71,7 @@ public class ProductController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String url = req.getRequestURI().toString();
-
+		resp.setHeader("X-Content-Type-Options", "nosniff");
 		// Hiển thị menu danh mục
 		List<CategoryModel> categoryParentList = categoryService.getParentCategory();
 		req.setAttribute("categoryParentList", categoryParentList);
