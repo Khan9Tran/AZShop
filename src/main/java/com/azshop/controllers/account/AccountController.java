@@ -264,6 +264,8 @@ public class AccountController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String url = req.getRequestURI().toString();
+		resp.setHeader("X-Frame-Options", "DENY");
+		resp.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
 		if (url.contains("register-customer")) {
 			postRegister(req, resp);
 		} else if (url.contains("verify-customer")) {
