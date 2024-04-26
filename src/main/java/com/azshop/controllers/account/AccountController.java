@@ -266,7 +266,6 @@ public class AccountController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String url = req.getRequestURI().toString();
 		resp.setHeader("X-Frame-Options", "DENY");
-		resp.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
 		resp.setHeader("X-Content-Type-Options", "nosniff");
 		if (url.contains("register-customer")) {
 			postRegister(req, resp);
@@ -435,37 +434,73 @@ public class AccountController extends HttpServlet {
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");
+		
+		try {
+		    // Lấy giá trị từ tham số request
+		    String username = req.getParameter("username");
+		    String password = req.getParameter("password");
 
-		// Lấy giá trị từ tham số request
-		String username = req.getParameter("username");
-		String password = req.getParameter("password");
+		    // Kiểm tra xem tên đăng nhập và mật khẩu có được nhập không
+		    if (username.isEmpty() || password.isEmpty()) {
+		        // Nếu không nhập đầy đủ thông tin, chuyển hướng đến trang đăng nhập để nhập lại
+		        req.getRequestDispatcher("/views/account/login.jsp").forward(req, resp);
+		        return;
+		    }
 
-		// Kiểm tra xem tên đăng nhập và mật khẩu có được nhập không
-		if (username.isEmpty() || password.isEmpty()) {
-			// Nếu không nhập đầy đủ thông tin, chuyển hướng đến trang đăng nhập để nhập lại
-			req.getRequestDispatcher("/views/account/login.jsp").forward(req, resp);
-			return;
+		    // Thực hiện quá trình đăng nhập bằng cách gọi phương thức login từ service
+		    UserModel user = userService.login(username, password);
+
+		    // Kiểm tra kết quả đăng nhập
+		    if (user != null) {
+		        // Nếu đăng nhập thành công, tạo phiên (session) và lưu thông tin người dùng vào
+		        // session
+		        HttpSession session = req.getSession(true);
+		        session.setAttribute(Constant.userSession, user);
+
+		        // Chuyển hướng đến trang "waiting" (hoặc trang chính của ứng dụng)
+		        resp.sendRedirect(req.getContextPath() + "/waiting");
+		    } else {
+		    	// Nếu đăng nhập không thành công, đặt thông báo lỗi vào request
+				req.setAttribute("loginError", "Thông tin đăng nhập không chính xác!");
+
+				// Forward lại đến trang login.jsp để hiển thị thông báo lỗi
+				req.getRequestDispatcher("/views/account/login.jsp").forward(req, resp);
+		    }
+		} catch (Exception e) {
+		    // Nếu có lỗi xảy ra, chuyển hướng đến trang 404
+		    resp.sendRedirect(req.getContextPath() + "/views/guest/404.jsp");
 		}
 
-		// Thực hiện quá trình đăng nhập bằng cách gọi phương thức login từ service
-		UserModel user = userService.login(username, password);
-
-		// Kiểm tra kết quả đăng nhập
-		if (user != null) {
-			// Nếu đăng nhập thành công, tạo phiên (session) và lưu thông tin người dùng vào
-			// session
-			HttpSession session = req.getSession(true);
-			session.setAttribute(Constant.userSession, user);
-
-			// Chuyển hướng đến trang "waiting" (hoặc trang chính của ứng dụng)
-			resp.sendRedirect(req.getContextPath() + "/waiting");
-		} else {
-			// Nếu đăng nhập không thành công, đặt thông báo lỗi vào request
-			req.setAttribute("loginError", "Thông tin đăng nhập không chính xác!");
-
-			// Forward lại đến trang login.jsp để hiển thị thông báo lỗi
-			req.getRequestDispatcher("/views/account/login.jsp").forward(req, resp);
-		}
+//		// Lấy giá trị từ tham số request
+//		String username = req.getParameter("username");
+//		String password = req.getParameter("password");
+//
+//		// Kiểm tra xem tên đăng nhập và mật khẩu có được nhập không
+//		if (username.isEmpty() || password.isEmpty()) {
+//			// Nếu không nhập đầy đủ thông tin, chuyển hướng đến trang đăng nhập để nhập lại
+//			req.getRequestDispatcher("/views/account/login.jsp").forward(req, resp);
+//			return;
+//		}
+//
+//		// Thực hiện quá trình đăng nhập bằng cách gọi phương thức login từ service
+//		UserModel user = userService.login(username, password);
+//
+//		// Kiểm tra kết quả đăng nhập
+//		if (user != null) {
+//			// Nếu đăng nhập thành công, tạo phiên (session) và lưu thông tin người dùng vào
+//			// session
+//			HttpSession session = req.getSession(true);
+//			session.setAttribute(Constant.userSession, user);
+//
+//			// Chuyển hướng đến trang "waiting" (hoặc trang chính của ứng dụng)
+//			resp.sendRedirect(req.getContextPath() + "/waiting");
+//		} else {
+//			// Nếu đăng nhập không thành công, đặt thông báo lỗi vào request
+//			req.setAttribute("loginError", "Thông tin đăng nhập không chính xác!");
+//
+//			// Forward lại đến trang login.jsp để hiển thị thông báo lỗi
+//			req.getRequestDispatcher("/views/account/login.jsp").forward(req, resp);
+//		}
 	}
 
 	private void postVerify(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

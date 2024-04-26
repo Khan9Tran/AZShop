@@ -24,8 +24,8 @@
 	
 	</filter-mapping>
 	<filter>
-    <filter-name>ContentTypeOptionsFilter</filter-name>
-    <filter-class>com.azshop.utils.ContentTypeOptionsFilter</filter-class>
+    	<filter-name>ContentTypeOptionsFilter</filter-name>
+    	<filter-class>com.azshop.utils.ContentTypeOptionsFilter</filter-class>
 	</filter>
 	<filter-mapping>
 	    <filter-name>ContentTypeOptionsFilter</filter-name>
