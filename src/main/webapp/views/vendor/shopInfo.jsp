@@ -42,6 +42,8 @@
 						String csrfToken = CSRF.getToken();
 
 						javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie("csrf", csrfToken);
+						cookie.setSecure(true); 
+						cookie.setHttpOnly(true);
 						response.addCookie(cookie);
 						%>
 						<form action="update-shop-info" method="post"
