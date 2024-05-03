@@ -45,13 +45,13 @@ public class ImageController extends HttpServlet {
            {
         	   System.out.println("File not found ");
        		
-        	   req.getRequestDispatcher("/404.jsp").forward(req, resp);
+        	   req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
            } 
        }
        	catch (Exception e) {
 				System.out.println("File not found ");
 		
-				req.getRequestDispatcher("/404.jsp").forward(req, resp);
+				req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
 		}
        }
 

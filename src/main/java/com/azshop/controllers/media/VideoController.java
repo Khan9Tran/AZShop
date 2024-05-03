@@ -33,11 +33,11 @@ public class VideoController extends HttpServlet{
 		            IOUtils.copy(new FileInputStream(file), resp.getOutputStream());
 		        } else {
 		            System.out.println("File not found: " + file.getAbsolutePath());
-		            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+		            req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
 		        }
 		    } catch (Exception e) {
 		        e.printStackTrace();
-		        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+		        req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
 		    }
 	}
 }
