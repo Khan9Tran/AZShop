@@ -20,7 +20,7 @@ public class DBConnection {
 		//DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
 		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		return DriverManager.getConnection(url);
-		}
+	}
     
 	public static void main(String[] args) {
 

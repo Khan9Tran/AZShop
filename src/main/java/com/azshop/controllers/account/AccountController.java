@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -540,6 +541,14 @@ public class AccountController extends HttpServlet {
 
 	}
 
+	public boolean isValidEmail(String email) {
+		String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+		Pattern pat = Pattern.compile(emailRegex);
+		if (email == null)
+			return false;
+		return pat.matcher(email).matches();
+	}
+
 	private void postRegister(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		// Cài đặt loại và bảng mã cho phản hồi từ server
 		resp.setContentType("text/html");
@@ -551,6 +560,13 @@ public class AccountController extends HttpServlet {
 		String password = req.getParameter("password");
 		String firstName = req.getParameter("first-name");
 		String lastName = req.getParameter("last-name");
+
+		// Kiểm tra xem email có hợp lệ không
+		if (!isValidEmail(email)) {
+			// Nếu email không hợp lệ, chuyển hướng đến trang 404
+			req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
+			return;
+		}
 
 		// Kiểm tra xem email đã tồn tại trong hệ thống hay chưa
 		if (userService.checkExistEmial(email)) {

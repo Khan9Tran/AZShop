@@ -86,9 +86,21 @@ public class CartController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String url = req.getRequestURI().toString();
 		
-		if (url.contains("guest")) {
-			resp.sendRedirect(req.getContextPath() + "/login-customer");
-		}
+		// Kiểm tra nếu URL chứa "guest"
+	    if (url.contains("guest")) {
+	        // Lấy giá trị của tham số "count" từ URL
+	        String countParam = req.getParameter("count");
+	        
+	        // Kiểm tra nếu tham số "count" không tồn tại hoặc không phải là số 1
+	        if (countParam == null || !countParam.equals("1")) {
+	            // Chuyển hướng người dùng đến trang error
+	        	req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
+	            return; // Kết thúc phương thức để ngăn chặn việc tiếp tục xử lý
+	        }
+	        
+	        // Nếu tham số "count" là số 1, chuyển hướng người dùng đến trang login-customer
+	        resp.sendRedirect(req.getContextPath() + "/login-customer");
+	    }
 		
 		try {
 			HttpSession session = req.getSession();

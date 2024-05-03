@@ -12,7 +12,6 @@ public class ContentTypeOptionsFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setHeader("X-Content-Type-Options", "nosniff");
         httpResponse.setHeader("X-Frame-Options", "DENY");
-        
         chain.doFilter(request, response);
     }
 
