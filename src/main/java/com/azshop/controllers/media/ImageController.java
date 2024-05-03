@@ -17,8 +17,10 @@ import org.apache.commons.io.IOUtils;
 
 import com.azshop.services.IImageService;
 import com.azshop.services.ImageServiceImpl;
+import com.azshop.utils.CheckValid;
 import com.azshop.utils.Constant;
 import com.google.gson.JsonObject;
+
 import org.owasp.encoder.Encode;
 
 
@@ -43,13 +45,13 @@ public class ImageController extends HttpServlet {
            {
         	   System.out.println("File not found ");
        		
-        	   req.getRequestDispatcher("/404.jsp").forward(req, resp);
+        	   req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
            } 
        }
        	catch (Exception e) {
 				System.out.println("File not found ");
 		
-				req.getRequestDispatcher("/404.jsp").forward(req, resp);
+				req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
 		}
        }
 

@@ -1,23 +1,62 @@
-<body class="bg-error">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="">
 
-<!-- Start wrapper-->
- <div class="pt-5">
- 
-    <div class="container pt-5">
-            <div class="row pt-5">
-                <div class="col-lg-12">
-                    <div class="text-center error-pages">
-                        <h1 class="error-title text-primary mb-3">404</h1>
-                        <h2 class="error-sub-title text-white">404 NOT FOUND</h2>
+<title>HTTP Status 404 – Not Found</title>
+<style type="text/css">
+body {
+	font-family: Tahoma, Arial, sans-serif;
+}
 
-  
-                    </div>
-                </div>
-            </div><!--end row-->
-        </div>
+h1, h2, h3, b {
+	color: white;
+	background-color: #525D76;
+}
 
- </div><!--wrapper-->
+h1 {
+	font-size: 22px;
+}
 
+h2 {
+	font-size: 16px;
+}
 
-	
+h3 {
+	font-size: 14px;
+}
+
+p {
+	font-size: 12px;
+}
+
+a {
+	color: black;
+}
+
+.line {
+	height: 1px;
+	background-color: #525D76;
+	border: none;
+}
+</style>
+</head>
+<body>
+	<h1>HTTP Status 404 – Not Found</h1>
+	<hr class="line" />
+	<p>
+		<b>Type</b> Status Report
+	</p>
+	<p>
+		<b>Message</b> File not found
+	</p>
+	<p>
+		<b>Description</b> The origin server did not find a current
+		representation for the target resource or is not willing to disclose
+		that one exists.
+	</p>
 </body>
+</html>

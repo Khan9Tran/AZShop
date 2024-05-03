@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.owasp.encoder.Encode;
+
 import com.azshop.models.CartModel;
 import com.azshop.models.OrderItemModel;
 import com.azshop.models.OrderModel;
@@ -94,7 +96,7 @@ public class AccountController extends HttpServlet {
 			UserModel user = (UserModel) session.getAttribute(Constant.userSession);
 
 			// Lấy orderId từ tham số truyền vào
-			Integer orderId = Integer.parseInt(req.getParameter("id"));
+			Integer orderId = Integer.parseInt(Encode.forHtml(req.getParameter("id")));
 
 			// Khởi tạo danh sách chứa thông tin sản phẩm và đặt hàng
 			List<ProductModel> product = new ArrayList<>();
@@ -160,7 +162,7 @@ public class AccountController extends HttpServlet {
 
 		// Lấy thông báo thành công từ tham số request (nếu có) và đặt vào thuộc tính
 		// "done"
-		String done = req.getParameter("done");
+		String done = Encode.forHtml(req.getParameter("done"));
 		req.setAttribute("done", done);
 
 		// Lấy phiên (session) hiện tại từ request
@@ -317,7 +319,7 @@ public class AccountController extends HttpServlet {
 
 		// Đặt trạng thái bằng cancelled
 		try {
-			Integer orderId = Integer.parseInt(req.getParameter("id"));
+			Integer orderId = Integer.parseInt(Encode.forHtml(req.getParameter("id")));
 			orderService.changeStatus(orderId, "Cancelled");
 			resp.sendRedirect("/AZShop/information?done= Don hang duoc xoa thanh cong!");
 		} catch (Exception e) {
@@ -343,9 +345,9 @@ public class AccountController extends HttpServlet {
 		}
 
 		// Lấy thông tin mật khẩu từ form
-		String currentPass = req.getParameter("currentPassword");
-		String newPassword = req.getParameter("newPassword");
-		String renewPassword = req.getParameter("renewPassword");
+		String currentPass = Encode.forHtml(req.getParameter("currentPassword"));
+		String newPassword = Encode.forHtml(req.getParameter("newPassword"));
+		String renewPassword = Encode.forHtml(req.getParameter("renewPassword"));
 
 		// Tạo chuỗi mật khẩu đã hash để so sánh với mật khẩu hiện tại của người dùng
 		String hashedPassword = currentPass + "-" + user.getSalt();
@@ -392,14 +394,14 @@ public class AccountController extends HttpServlet {
 		}
 
 		// Cập nhật thông tin người dùng với các giá trị từ form
-		user.setFirstName(req.getParameter("firstName"));
-		user.setLastName(req.getParameter("lastName"));
-		user.setEmail(user.getEmail()); // Lưu ý: đoạn này có thể cần được chỉnh sửa nếu bạn muốn cập nhật email từ form
-		user.setPhone(req.getParameter("phone"));
-		user.setAddress(req.getParameter("address"));
+		user.setFirstName(Encode.forHtml(req.getParameter("firstName")));
+		user.setLastName((req.getParameter("lastName")));
+		user.setEmail(Encode.forHtml(user.getEmail())); // Lưu ý: đoạn này có thể cần được chỉnh sửa nếu bạn muốn cập nhật email từ form
+		user.setPhone(Encode.forHtml(req.getParameter("phone")));
+		user.setAddress(Encode.forHtml(req.getParameter("address")));
 		user.setAvatar(image);
 		
-		if (req.getParameter("phone").length() < 10) {
+		if (Encode.forHtml(req.getParameter("phone")).length() < 10) {
 			resp.sendRedirect("/AZShop/information?done=Cap nhat thong tin khong thanh cong!");
 			return;
 		} else {
@@ -418,7 +420,7 @@ public class AccountController extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 
 		// Lấy giá trị email từ tham số request
-		String email = req.getParameter("username");
+		String email = Encode.forHtml(req.getParameter("username"));
 
 		// Kiểm tra xem email có tồn tại trong hệ thống không
 		if (userService.checkExistEmial(email)) {
@@ -462,8 +464,8 @@ public class AccountController extends HttpServlet {
 		
 		try {
 		    // Lấy giá trị từ tham số request
-		    String username = req.getParameter("username");
-		    String password = req.getParameter("password");
+		    String username = Encode.forHtml(req.getParameter("username"));
+		    String password = Encode.forHtml(req.getParameter("password"));
 
 		    // Kiểm tra xem tên đăng nhập và mật khẩu có được nhập không
 		    if (username.isEmpty() || password.isEmpty()) {
@@ -542,7 +544,7 @@ public class AccountController extends HttpServlet {
 		String codeSend = (String) session.getAttribute("code");
 
 		// Lấy mã xác nhận từ tham số request
-		String code = req.getParameter("verify-code");
+		String code = Encode.forHtml(req.getParameter("verify-code"));
 
 		// Kiểm tra xem mã xác nhận nhập vào có khớp với mã đã gửi đi không
 		if (code.equals(codeSend)) {
@@ -580,10 +582,10 @@ public class AccountController extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 
 		// Lấy giá trị từ tham số request
-		String email = req.getParameter("email");
-		String password = req.getParameter("password");
-		String firstName = req.getParameter("first-name");
-		String lastName = req.getParameter("last-name");
+		String email = Encode.forHtml(req.getParameter("email"));
+		String password = Encode.forHtml(req.getParameter("password"));
+		String firstName = Encode.forHtml(req.getParameter("first-name"));
+		String lastName = Encode.forHtml(req.getParameter("last-name"));
 
 		// Kiểm tra xem email có hợp lệ không
 		if (!isValidEmail(email)) {
