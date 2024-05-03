@@ -17,8 +17,10 @@ import org.apache.commons.io.IOUtils;
 
 import com.azshop.services.IImageService;
 import com.azshop.services.ImageServiceImpl;
+import com.azshop.utils.CheckValid;
 import com.azshop.utils.Constant;
 import com.google.gson.JsonObject;
+
 import org.owasp.encoder.Encode;
 
 

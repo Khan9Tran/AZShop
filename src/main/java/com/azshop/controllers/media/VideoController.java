@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.owasp.encoder.Encode;
 
 import com.azshop.utils.Constant;
 
@@ -20,7 +21,7 @@ import com.azshop.utils.Constant;
 public class VideoController extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		 String fileName = req.getParameter("fname");
+		 String fileName = Encode.forHtml(req.getParameter("fname"));
 		    File file = new File(Constant.DIR + "/" + fileName);
 		    System.out.println("File path: " + file.getAbsolutePath());
 
