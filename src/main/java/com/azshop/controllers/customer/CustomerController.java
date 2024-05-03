@@ -75,6 +75,11 @@ public class CustomerController extends HttpServlet {
 			HttpSession sessionCart = req.getSession();
 			UserModel userCart = (UserModel) sessionCart.getAttribute(Constant.userSession);	
 			
+			if(userCart == null) {
+				req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
+				return;
+			}
+			
 			List<CartModel> cartList = cartService.getByUserId(userCart.getId());
 			List<CartItemModel> cartItemList = new ArrayList<CartItemModel>();
 			
