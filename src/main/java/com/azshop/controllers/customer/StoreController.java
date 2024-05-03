@@ -131,11 +131,21 @@ private static final long serialVersionUID = 1L;
 
 			if (parts.length > 0) {
 				String slug = parts[parts.length - 1];
+				if(!isValidSlug(slug)) {
+					RequestDispatcher rd = req.getRequestDispatcher("/views/guest/404.jsp");
+					rd.forward(req, resp);
+					return;
+				}
 				
 				try {
-
 					StoreModel store = storeService.getBySlug(slug);
+					if(!isValidSlug(req.getParameter("cate"))) {
+						RequestDispatcher rd = req.getRequestDispatcher("/views/guest/404.jsp");
+						rd.forward(req, resp);
+						return;
+					}
 					CategoryModel category = categoryService.getCategoryBySlug(req.getParameter("cate"));
+					
 					
 					List<ProductModel> productList = new ArrayList<ProductModel>();
 	                List<ImageModel> imageList = new ArrayList<ImageModel>();
@@ -185,7 +195,22 @@ private static final long serialVersionUID = 1L;
 	                
 	                List<ProductModel> productListSort = new ArrayList<ProductModel>();             
 	                
-	                int sortBy = Integer.parseInt(req.getParameter("sortBy"));
+	                int sortBy = 0;
+	                try {
+						String sortby = req.getParameter("sortBy");
+						if (sortby == null || (!sortby.equals("0") && !sortby.equals("1"))) {
+				            // Chuyển hướng người dùng đến trang error
+				        	req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
+				            return; // Kết thúc phương thức để ngăn chặn việc tiếp tục xử lý
+				        }
+						
+						sortBy = Integer.parseInt(req.getParameter("sortBy"));
+
+					} catch (Exception e) {
+						e.printStackTrace();
+						RequestDispatcher rd = req.getRequestDispatcher("/views/vendor/404.jsp");
+						rd.forward(req, resp);
+					}
 	                
 	              //sắp xếp
 	                if (sortBy == 0) {
@@ -241,4 +266,20 @@ private static final long serialVersionUID = 1L;
 
         return productCount;
     }
+	
+	public boolean isValidSlug(String slug) {
+		if (slug == null) {
+			return false;
+		}
+
+		if (!slug.matches("^[a-zA-Z0-9_-]+$")) {
+			return false;
+		}
+
+		if (slug.contains("--")) {
+			return false;
+		}
+
+		return true;
+	}
 }

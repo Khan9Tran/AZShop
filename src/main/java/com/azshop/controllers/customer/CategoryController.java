@@ -228,6 +228,13 @@ public class CategoryController extends HttpServlet {
 
 					int sortBy = 0;
 					try {
+						String sortby = req.getParameter("sortBy");
+						if (sortby == null || (!sortby.equals("0") && !sortby.equals("1"))) {
+				            // Chuyển hướng người dùng đến trang error
+				        	req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
+				            return; // Kết thúc phương thức để ngăn chặn việc tiếp tục xử lý
+				        }
+						
 						sortBy = Integer.parseInt(req.getParameter("sortBy"));
 
 					} catch (Exception e) {
