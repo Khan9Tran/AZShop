@@ -14,6 +14,7 @@ import javax.imageio.metadata.IIOMetadataFormat;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,8 +63,8 @@ import com.azshop.services.StyleValueImpl;
 import com.azshop.services.UserServiceImpl;
 import com.azshop.utils.Constant;
 
-@WebServlet(urlPatterns = { "/customer/add-to-cart/*", "/guest/add-to-cart/*", "/customer/delete-item-cart", "/customer/cart/checkout",
-		"/customer/cart/checkout-comfirm", "/customer/add-address" })
+@WebServlet(urlPatterns = { "/customer/add-to-cart/*", "/guest/add-to-cart/*", "/customer/delete-item-cart",
+		"/customer/cart/checkout", "/customer/cart/checkout-comfirm", "/customer/add-address" })
 public class CartController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -84,12 +85,12 @@ public class CartController extends HttpServlet {
 	UserModel user = new UserModel();
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String url = req.getRequestURI().toString();
-		
+		String url = req.getRequestURI().toString();		
+
 		if (url.contains("guest")) {
 			resp.sendRedirect(req.getContextPath() + "/login-customer");
 		}
-		
+
 		try {
 			HttpSession session = req.getSession();
 			if (session != null) {
@@ -270,24 +271,24 @@ public class CartController extends HttpServlet {
 
 					// Lấy thử danh sách cart
 					List<CartModel> cartList = cartService.getByUserId(user.getId());
-					
-					//nếu chưa có cart nào
+
+					// nếu chưa có cart nào
 					if (cartList.size() == 0) {
-						//tạo một cart mới
+						// tạo một cart mới
 						CartModel cart = new CartModel();
 						CartModel newCart = new CartModel();
 						newCart.setUserId(user.getId());
 						newCart.setStoreId(product.getStoreId());
 						cartService.insert(newCart);
-						
-						//Lấy lại danh sách cart sau khi vừa thêm mới
+
+						// Lấy lại danh sách cart sau khi vừa thêm mới
 						cartList = cartService.getByUserId(user.getId());
 						for (CartModel cartModel : cartList) {
 							if (product.getStoreId() == cartModel.getStoreId()) {
 								cart = cartModel;
 							}
 						}
-						
+
 						// Thêm item mới vào cart
 						CartItemModel newItem = new CartItemModel();
 						newItem.setCartId(cart.getId());
@@ -296,8 +297,8 @@ public class CartController extends HttpServlet {
 						newItem.setCount(Integer.parseInt(req.getParameter("count")));
 						cartItemService.insert(newItem);
 					}
-					
-					//nếu đã có cart
+
+					// nếu đã có cart
 					else {
 						boolean isExistCart = false;
 						CartModel cart = new CartModel();
@@ -351,8 +352,8 @@ public class CartController extends HttpServlet {
 							newCart.setUserId(user.getId());
 							newCart.setStoreId(product.getStoreId());
 							cartService.insert(newCart);
-							
-							//Lấy lại danh sách cart sau khi vừa thêm mới
+
+							// Lấy lại danh sách cart sau khi vừa thêm mới
 							cartList = cartService.getByUserId(user.getId());
 							for (CartModel cartModel : cartList) {
 								if (product.getStoreId() == cartModel.getStoreId()) {
@@ -501,20 +502,38 @@ public class CartController extends HttpServlet {
 		if (url.contains("/customer/add-address")) {
 			req.setCharacterEncoding("UTF-8");
 			resp.setCharacterEncoding("UTF-8");
-			
+
 			String recipientName = req.getParameter("recipientName");
-	        String address = req.getParameter("address");
-	        String phone = req.getParameter("phone");
-			
-	        AddressShippingModel addressShipping = new AddressShippingModel();
-	        addressShipping.setUserId(user.getId());
-	        addressShipping.setRecipientName(recipientName);
-	        addressShipping.setAddress(address);
-	        addressShipping.setPhone(phone);
-	        
-	        addressShippingService.insert(addressShipping);
-	        
-	        resp.sendRedirect("cart/checkout");
+			String address = req.getParameter("address");
+			String phone = req.getParameter("phone");
+
+			AddressShippingModel addressShipping = new AddressShippingModel();
+			addressShipping.setUserId(user.getId());
+			addressShipping.setRecipientName(recipientName);
+			addressShipping.setAddress(address);
+			addressShipping.setPhone(phone);
+
+			addressShippingService.insert(addressShipping);
+
+			resp.sendRedirect("cart/checkout");
 		}
+	}
+
+	public boolean doAction(HttpServletRequest request, HttpServletResponse response) {
+		String csrfCookie = null;
+		for (Cookie cookie : request.getCookies()) {
+			if (cookie.getName().equals("csrf")) {
+				csrfCookie = cookie.getValue();
+			}
+		}
+
+		String csrfField = request.getParameter("csrfToken");
+
+		if (csrfCookie == null || csrfField == null || !csrfCookie.equals(csrfField)) {
+			return false;
+		} else {
+			return true;
+		}
+
 	}
 }

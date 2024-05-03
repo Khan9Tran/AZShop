@@ -13,7 +13,7 @@
                         <p class="error-message text-white text-uppercase">SORRY, AN ERROR HAS OCCURED, REQUESTED PAGE NOT FOUND!</p>
                         
                         <div class="mt-4 d-flex align-items-center justify-content-center gap-3">
-                          <a href="AZShop/vendor/dashboard" class="btn btn-primary rounded-5 px-4"><i class="bi bi-house-fill me-2"></i>Go To Home</a>
+                          <a href="http://localhost:8080/AZShop/guest-home" class="btn btn-primary rounded-5 px-4"><i class="bi bi-house-fill me-2"></i>Go To Home</a>
                         </div>
 
                         <div class="mt-4">

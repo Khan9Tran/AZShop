@@ -31,6 +31,7 @@ public class ImageController extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
         resp.setHeader("X-Content-Type-Options", "nosniff");
+
        try {
     	   String fileName = Encode.forHtml(req.getParameter("fname"));
            File file = new File(Constant.DIR + "/" + fileName);
@@ -42,13 +43,13 @@ public class ImageController extends HttpServlet {
            {
         	   System.out.println("File not found ");
        		
-        	   req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
+        	   req.getRequestDispatcher("/404.jsp").forward(req, resp);
            } 
        }
        	catch (Exception e) {
 				System.out.println("File not found ");
 		
-				req.getRequestDispatcher("/views/guest/404.jsp").forward(req, resp);
+				req.getRequestDispatcher("/404.jsp").forward(req, resp);
 		}
        }
 

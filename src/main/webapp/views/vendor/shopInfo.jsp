@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@page import="com.azshop.utils.CSRF"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <body>
 	<!--start main content-->
@@ -26,7 +26,8 @@
 		</div>
 		<div style="display: flex; flex-direction: row; align-items: center">
 			<h4 class="mb-3">${!isView?"Edit Shop Information":"Shop Information"}</h4>
-			<a href="/AZShop/vendor/update-shop-info" ${!isView? 'style="display: none;"' : '' }>
+			<a href="/AZShop/vendor/update-shop-info"
+				${!isView? 'style="display: none;"' : '' }>
 				<button class="button__edit-shop-info"
 					style="width: auto; height: auto; padding: 5px 30px; margin: 0 70px; border: none; border-radius: 3px; background-color: #383d42; color: #fff; transform: translateY(-5px);"
 					onmouseover="this.style.color = '#d10024'"
@@ -37,15 +38,21 @@
 			<div class="col-lg-8 mx-auto">
 				<div class="card">
 					<div class="card-body">
+						<%
+						String csrfToken = CSRF.getToken();
+
+						javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie("csrf", csrfToken);
+						response.addCookie(cookie);
+						%>
 						<form action="update-shop-info" method="post"
 							enctype="multipart/form-data">
+							<input type="hidden" name="csrfToken" value="<%=csrfToken%>" />
 							<div class="container-cover-imagea rounded"
 								style="background-color: #383d42; min-height: 300px;">
 								<div
 									class="image d-flex justify-content-center position-relative"
 									style="min-height: 300px;">
-									<img src="${storeCover}"
-										id="previewCoverImage"
+									<img src="${storeCover}" id="previewCoverImage"
 										style="max-width: 100%; max-height: 100%;"> <input
 										type="file" id="coverImage" name="coverImage"
 										style="display: none;" accept="image/*"> <label
@@ -64,8 +71,7 @@
 									style="left: -35%; transform: translateY(-50px); height: 150px;">
 									<div class="user-change-photo shadow-sm"
 										style="min-height: 200px; min-width: 200px;">
-										<img id="previewAvatarImage"
-											src="${storeAvatar}">
+										<img id="previewAvatarImage" src="${storeAvatar}">
 									</div>
 									<input type="file" id="avatarImage" name="avatarImage"
 										style="display: none;" accept="image/*"> <label
@@ -111,8 +117,7 @@
 								</div>
 								<div class="col-12 d-flex justify-content-center"
 									style="min-height: 250px; background-color: #383d42; padding: 15px; border-radius: 5px;">
-									<img id="previewFeaturedImage"
-										src="${storeFeatured}"
+									<img id="previewFeaturedImage" src="${storeFeatured}"
 										style="max-width: 100%; max-height: 100%;">
 								</div>
 							</div>
