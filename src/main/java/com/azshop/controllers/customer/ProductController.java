@@ -10,6 +10,7 @@ import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,57 +79,56 @@ public class ProductController extends HttpServlet {
 
 		if (url.contains("customer")) {
 			HttpSession sessionCart = req.getSession();
-			UserModel userCart = (UserModel) sessionCart.getAttribute(Constant.userSession);	
-			
+			UserModel userCart = (UserModel) sessionCart.getAttribute(Constant.userSession);
+
 			List<CartModel> cartList = cartService.getByUserId(userCart.getId());
 			List<CartItemModel> cartItemList = new ArrayList<CartItemModel>();
-			
-			//Hiển thị item trong giỏ hàng
+
+			// Hiển thị item trong giỏ hàng
 			for (CartModel cart : cartList) {
 				List<CartItemModel> itemList = cartItemService.getByCartId(cart.getId());
 				cartItemList.addAll(itemList);
-			}										
-			
-			//Lấy thông tin danh sách product có trong giỏ hàng
+			}
+
+			// Lấy thông tin danh sách product có trong giỏ hàng
 			List<ProductModel> productsInCart = new ArrayList<ProductModel>();
-			
+
 			for (CartItemModel cartItem : cartItemList) {
-				ProductModel  productInCart = productService.getById(cartItem.getProductId());
+				ProductModel productInCart = productService.getById(cartItem.getProductId());
 				productInCart.setPrice(productInCart.getPrice().setScale(0));
 				productsInCart.add(productInCart);
 			}
-			
+
 			BigDecimal sum = BigDecimal.ZERO;
 
 			for (int i = 0; i < cartItemList.size(); i++) {
-			    ProductModel productModel = productService.getById(cartItemList.get(i).getProductId());
-			    
-			    if (productModel != null) {
-			        BigDecimal productPrice = productModel.getPrice();
-			        int count = cartItemList.get(i).getCount();
-			        
-			        sum = sum.add(productPrice.multiply(BigDecimal.valueOf(count))).setScale(0);
-			    }
+				ProductModel productModel = productService.getById(cartItemList.get(i).getProductId());
+
+				if (productModel != null) {
+					BigDecimal productPrice = productModel.getPrice();
+					int count = cartItemList.get(i).getCount();
+
+					sum = sum.add(productPrice.multiply(BigDecimal.valueOf(count))).setScale(0);
+				}
 			}
 
-		    req.setAttribute("sumPrice", sum);
-			
+			req.setAttribute("sumPrice", sum);
+
 			List<ImageModel> imageProductsInCart = new ArrayList<ImageModel>();
 
 			for (ProductModel productModel : productsInCart) {
 				ImageModel image = imageService.getImage(productModel.getId());
 				imageProductsInCart.add(image);
 			}
-			
+
 			req.setAttribute("role", "customer");
 			req.setAttribute("quantity", cartItemList.size());
 			req.setAttribute("user", userCart);
-			req.setAttribute("imageProductsInCart", imageProductsInCart);	
+			req.setAttribute("imageProductsInCart", imageProductsInCart);
 			req.setAttribute("cartItemList", cartItemList);
-			req.setAttribute("productsInCart", productsInCart);	
+			req.setAttribute("productsInCart", productsInCart);
 		}
-		
-		
+
 		else if (url.contains("guest")) {
 			req.setAttribute("role", "guest");
 		}
@@ -149,8 +149,14 @@ public class ProductController extends HttpServlet {
 		if (url.contains("guest")) {
 			resp.sendRedirect(req.getContextPath() + "/login-customer");
 		}
-		
+
 		else if (url.contains("review-product")) {
+			if (!doAction(req, resp)) {
+				RequestDispatcher rDispatcher = req.getRequestDispatcher("/404.jsp");
+				rDispatcher.forward(req, resp);
+				return;
+			}
+
 			try {
 				postReviewProduct(req, resp);
 			} catch (Exception e) {
@@ -203,15 +209,17 @@ public class ProductController extends HttpServlet {
 				// Cập nhật đánh giá trung bình cho sản phẩm
 				product.setRating(reviewService.avgRating(product.getId()));
 				productService.update(product);
-				
+
 				// Đặt thông báo thành công và chuyển hướng trang
-				resp.sendRedirect(req.getContextPath() + "/customer/product/" + product.getSlug() + "?done= Riview san pham thanh cong!");
+				resp.sendRedirect(req.getContextPath() + "/customer/product/" + product.getSlug()
+						+ "?done= Riview san pham thanh cong!");
 				return;
 			}
 		}
 
 		// Đặt thông báo lỗi và chuyển hướng trang
-		resp.sendRedirect(req.getContextPath() + "/customer/product/" + product.getSlug() + "?done= Riview san pham that bai!");
+		resp.sendRedirect(
+				req.getContextPath() + "/customer/product/" + product.getSlug() + "?done= Riview san pham that bai!");
 
 	}
 
@@ -219,7 +227,7 @@ public class ProductController extends HttpServlet {
 		try {
 			// Trích xuất slug từ request URL
 			String slug = extractSlugFromRequest(req);
-			
+
 			String done = req.getParameter("done");
 			req.setAttribute("done", done);
 
@@ -323,5 +331,23 @@ public class ProductController extends HttpServlet {
 		int totalStarReviews = reviewService.countStar(productId, rating);
 		double percentage = ((double) totalStarReviews / size) * 100;
 		return String.valueOf(percentage);
+	}
+
+	public boolean doAction(HttpServletRequest request, HttpServletResponse response) {
+		String csrfCookie = null;
+		for (Cookie cookie : request.getCookies()) {
+			if (cookie.getName().equals("csrf")) {
+				csrfCookie = cookie.getValue();
+			}
+		}
+
+		String csrfField = request.getParameter("csrfToken");
+
+		if (csrfCookie == null || csrfField == null || !csrfCookie.equals(csrfField)) {
+			return false;
+		} else {
+			return true;
+		}
+
 	}
 }

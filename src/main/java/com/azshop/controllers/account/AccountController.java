@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,6 +56,7 @@ public class AccountController extends HttpServlet {
 		resp.setHeader("X-Content-Type-Options", "nosniff");
 		req.setCharacterEncoding("UTF-8");
 		resp.setCharacterEncoding("UTF-8");
+		
 		String url = req.getRequestURI().toString();
 
 		if (url.contains("register-customer")) {
@@ -268,13 +271,34 @@ public class AccountController extends HttpServlet {
 		String url = req.getRequestURI().toString();
 		resp.setHeader("X-Frame-Options", "DENY");
 		resp.setHeader("X-Content-Type-Options", "nosniff");
+
 		if (url.contains("register-customer")) {
+			if (!doAction(req, resp)) {
+				RequestDispatcher rDispatcher = req.getRequestDispatcher("/404.jsp");
+				rDispatcher.forward(req, resp);
+				return;
+			}
 			postRegister(req, resp);
 		} else if (url.contains("verify-customer")) {
+			if (!doAction(req, resp)) {
+				RequestDispatcher rDispatcher = req.getRequestDispatcher("/404.jsp");
+				rDispatcher.forward(req, resp);
+				return;
+			}
 			postVerify(req, resp);
 		} else if (url.contains("login-customer")) {
+			if (!doAction(req, resp)) {
+				RequestDispatcher rDispatcher = req.getRequestDispatcher("/404.jsp");
+				rDispatcher.forward(req, resp);
+				return;
+			}
 			postLogin(req, resp);
 		} else if (url.contains("forget-customer")) {
+			if (!doAction(req, resp)) {
+				RequestDispatcher rDispatcher = req.getRequestDispatcher("/404.jsp");
+				rDispatcher.forward(req, resp);
+				return;
+			}
 			postForget(req, resp);
 		} else if (url.contains("update-infor")) {
 			postUpdateInfor(req, resp);
@@ -603,5 +627,23 @@ public class AccountController extends HttpServlet {
 				outPrintWriter.println("Lỗi khi gửi mail!");
 			}
 		}
+	}
+	
+	public boolean doAction(HttpServletRequest request, HttpServletResponse response) {
+		String csrfCookie = null;
+		for (Cookie cookie : request.getCookies()) {
+			if (cookie.getName().equals("csrf")) {
+				csrfCookie = cookie.getValue();
+			}
+		}
+
+		String csrfField = request.getParameter("csrfToken");
+
+		if (csrfCookie == null || csrfField == null || !csrfCookie.equals(csrfField)) {
+			return false;
+		} else {
+			return true;
+		}
+
 	}
 }

@@ -24,6 +24,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -110,6 +111,7 @@ public class VenderController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
 		resp.setCharacterEncoding("UTF-8");
+
 		HttpSession session = req.getSession();
 		UserModel userModel = (UserModel) session.getAttribute(Constant.userSession);
 		StoreModel storeModel = (StoreModel) session.getAttribute(Constant.storeSession);
@@ -223,7 +225,7 @@ public class VenderController extends HttpServlet {
 			String idReview = req.getParameter("id");
 			ProductModel productModel = productService.getBySlug(slug);
 			if (productModel == null) {
-				req.getRequestDispatcher("/views/vendor/404.jsp").forward(req, resp);
+				req.getRequestDispatcher("/404.jsp").forward(req, resp);
 				return;
 			}
 			List<ReviewModel> reviewModels = reviewService.getByProductId(productModel.getId());
@@ -235,7 +237,7 @@ public class VenderController extends HttpServlet {
 			rDispatcher.forward(req, resp);
 
 		} catch (Exception e) {
-			req.getRequestDispatcher("/views/vendor/404.jsp").forward(req, resp);
+			req.getRequestDispatcher("/404.jsp").forward(req, resp);
 		}
 		return;
 
@@ -553,10 +555,10 @@ public class VenderController extends HttpServlet {
 							req.setAttribute("styleModelId", styleModel.getId());
 
 						} catch (Exception e) {
-							req.getRequestDispatcher("/views/vendor/404.jsp").forward(req, resp);
+							req.getRequestDispatcher("/404.jsp").forward(req, resp);
 						}
 					} else {
-						req.getRequestDispatcher("/views/vendor/404.jsp").forward(req, resp);
+						req.getRequestDispatcher("/404.jsp").forward(req, resp);
 					}
 				} catch (URISyntaxException e) {
 					e.printStackTrace();
@@ -717,6 +719,13 @@ public class VenderController extends HttpServlet {
 	}
 
 	private void UpdateShopInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+
+		if (!doAction(req, resp)) {
+			RequestDispatcher rDispatcher = req.getRequestDispatcher("/404.jsp");
+			rDispatcher.forward(req, resp);
+			return;
+		}
+
 		req.setCharacterEncoding("UTF-8");
 		resp.setCharacterEncoding("UTF-8");
 		resp.setContentType("application/json");
@@ -825,6 +834,24 @@ public class VenderController extends HttpServlet {
 			e.printStackTrace();
 			resp.sendRedirect("?error=The addition of the product has failed.");
 		}
+	}
+
+	public boolean doAction(HttpServletRequest request, HttpServletResponse response) {
+		String csrfCookie = null;
+		for (Cookie cookie : request.getCookies()) {
+			if (cookie.getName().equals("csrf")) {
+				csrfCookie = cookie.getValue();
+			}
+		}
+
+		String csrfField = request.getParameter("csrfToken");
+
+		if (csrfCookie == null || csrfField == null || !csrfCookie.equals(csrfField)) {
+			return false;
+		} else {
+			return true;
+		}
+
 	}
 
 }

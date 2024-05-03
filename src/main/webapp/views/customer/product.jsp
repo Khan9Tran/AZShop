@@ -1,5 +1,6 @@
+<%@page import="com.azshop.utils.CSRF"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ include file="/common/taglib.jsp"%>
 <!DOCTYPE html>
 <html>
@@ -7,52 +8,50 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
-    /* CSS cho video container */
-    .video-container {
-        position: relative;
-        width: 100%;
-        max-width: 600px; /* Tăng độ rộng tối đa của video nếu bạn muốn */
-        margin: auto;
-    }
+/* CSS cho video container */
+.video-container {
+	position: relative;
+	width: 100%;
+	max-width: 600px; /* Tăng độ rộng tối đa của video nếu bạn muốn */
+	margin: auto;
+}
 
-    /* CSS cho video */
-    .video-container video {
-        width: 100%;
-        height: auto;
-        display: block;
-        padding: 2px 0 0 5px;
-    }
+/* CSS cho video */
+.video-container video {
+	width: 100%;
+	height: auto;
+	display: block;
+	padding: 2px 0 0 5px;
+}
 
-	.custom-alert {
-			display: none;
-			position: fixed;
-			top: 20px;
-			left: 50%;
-			transform: translateX(-50%);
-			padding: 15px;
-			background-color: #4CAF50;
-			color: white;
-			border-radius: 5px;
-			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-			z-index: 999;
-		}
-	
-		.close-btn {
-			position: absolute;
-			top: 5px;
-			right: 10px;
-			cursor: pointer;
-			font-size: 18px;
-			color: #fff;
-		}
+.custom-alert {
+	display: none;
+	position: fixed;
+	top: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 15px;
+	background-color: #4CAF50;
+	color: white;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	z-index: 999;
+}
 
+.close-btn {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	cursor: pointer;
+	font-size: 18px;
+	color: #fff;
+}
 </style>
 </head>
 <body>
 	<c:if test="${done != null}">
 		<div class="custom-alert" id="customAlert">
-			<span class="close-btn" onclick="closeAlert()">&times;</span>
-			${done}
+			<span class="close-btn" onclick="closeAlert()">&times;</span> ${done}
 		</div>
 		<script>
 			// Hiển thị thông báo khi có nội dung
@@ -67,9 +66,7 @@
 	<!-- BREADCRUMB -->
 	<div id="breadcrumb" class="section">
 		<!-- container -->
-		<div class="container">
-			
-		</div>
+		<div class="container"></div>
 		<!-- /container -->
 	</div>
 	<!-- /BREADCRUMB -->
@@ -83,52 +80,62 @@
 				<!-- Product main img -->
 				<div class="col-md-5 col-md-push-2">
 					<div id="product-main-img">
-						<c:forEach var="image" items="${imageList}"> 
+						<c:forEach var="image" items="${imageList}">
 							<div class="product-preview">
-								 <img src="/AZShop/image?fname=${image.image}" alt="">
+								<img src="/AZShop/image?fname=${image.image}" alt="">
 							</div>
 						</c:forEach>
-								<c:if test="${product.video != null}">
-										    <div class="card">
-										        <div class="video-container">
-										            <video controls>
-										                <source src="${(product != null && product.video != null) ? '/AZShop/video?fname=' : ''}${(product != null && product.video != null) ? product.video : ''}" type="video/mp4">
-										            </video>
-										        </div>
-										    </div>
-										</c:if>
+						<c:if test="${product.video != null}">
+							<div class="card">
+								<div class="video-container">
+									<video controls>
+										<source
+											src="${(product != null && product.video != null) ? '/AZShop/video?fname=' : ''}${(product != null && product.video != null) ? product.video : ''}"
+											type="video/mp4">
+									</video>
+								</div>
+							</div>
+						</c:if>
 					</div>
-					
+
 				</div>
 				<!-- /Product main img -->
 
 				<!-- Product thumb imgs -->
 				<div class="col-md-2  col-md-pull-5">
 					<div id="product-imgs">
-									
-						<c:forEach var="image" items="${imageList}"> 
+
+						<c:forEach var="image" items="${imageList}">
 							<div class="product-preview">
-								 <img src="/AZShop/image?fname=${image.image}" alt="">
+								<img src="/AZShop/image?fname=${image.image}" alt="">
 							</div>
 						</c:forEach>
 						<c:if test="${product.video != null}">
-					    <div class="card">
-					        <div class="video-container">
-					            <video>
-					                <source src="${(product != null && product.video != null) ? '/AZShop/video?fname=' : ''}${(product != null && product.video != null) ? product.video : ''}" type="video/mp4">
-					            </video>
-					        </div>
-					    </div>
-					</c:if>
+							<div class="card">
+								<div class="video-container">
+									<video>
+										<source
+											src="${(product != null && product.video != null) ? '/AZShop/video?fname=' : ''}${(product != null && product.video != null) ? product.video : ''}"
+											type="video/mp4">
+									</video>
+								</div>
+							</div>
+						</c:if>
 					</div>
 				</div>
 
-				
+
 				<!-- Product details -->
 				<div class="col-md-5">
+					<%
+					String csrfToken = CSRF.getToken();
+
+					javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie("csrf", csrfToken);
+					response.addCookie(cookie);
+					%>
+
 					<div class="product-details">
-						<h2 class="product-name">${product.name}
-						</h2>
+						<h2 class="product-name">${product.name}</h2>
 						<div>
 							<div class="product-rating">
 								<c:forEach var="i" begin="1" end="5">
@@ -146,26 +153,27 @@
 								review</a>
 						</div>
 						<div>
-							<h3 class="product-price">
-								${product.price}
-							</h3>
-							<span class="product-available">In Stock: ${product.quantity}</span>
+							<h3 class="product-price">${product.price}</h3>
+							<span class="product-available">In Stock:
+								${product.quantity}</span>
 						</div>
-						<p>Cửa hàng: <a href='<c:url value="/${role}/store/${store.slug}?cate=&sortBy=${0}"/>' style="text-decorator:none;">${store.name}</a></p>
-
-						
+						<p>
+							Cửa hàng: <a
+								href='<c:url value="/${role}/store/${store.slug}?cate=&sortBy=${0}"/>'
+								style="text-decorator: none;">${store.name}</a>
+						</p>
 
 						<form
 							action="<c:url value='/${role}/add-to-cart/${product.slug}'/>"
 							method="get">
+							<input type="hidden" name="csrfToken" value="<%=csrfToken%>" />
 							<div class="add-to-cart">
 								<div class="qty-label">
 									Số lượng
 									<div class="input-number">
-										<input type="number" name="count" id="count" value="1"
-											min="1"> <span class="qty-up"
-											onclick="increaseValue()">+</span> <span class="qty-down"
-											onclick="decreaseValue()">-</span>
+										<input type="number" name="count" id="count" value="1" min="1">
+										<span class="qty-up" onclick="increaseValue()">+</span> <span
+											class="qty-down" onclick="decreaseValue()">-</span>
 									</div>
 								</div>
 								<button class="add-to-cart-btn" type="submit">
@@ -194,7 +202,7 @@
 							<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
 							<li><a href="#"><i class="fa fa-envelope"></i></a></li>
 						</ul>
-						
+
 						<div>
 							<!-- Thêm đoạn mã để hiển thị thông báo -->
 							<c:if test="${not empty commentSuccess}">
@@ -215,7 +223,8 @@
 						<ul class="tab-nav">
 							<li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
 							<li><a data-toggle="tab" href="#tab2">Details</a></li>
-							<li><a data-toggle="tab" href="#tab3">Reviews (${countReview})</a></li>
+							<li><a data-toggle="tab" href="#tab3">Reviews
+									(${countReview})</a></li>
 						</ul>
 						<!-- /product tab nav -->
 
@@ -317,7 +326,7 @@
 										</div>
 									</div>
 									<!-- /Rating -->
-	
+
 									<!-- Reviews -->
 									<div class="col-md-6">
 										<div id="reviews">
@@ -327,8 +336,10 @@
 														<div class="review-heading">
 															<c:set var="printedUserName" value="false" />
 															<c:forEach var="user" items="${userList}">
-																<c:if test="${review.userId eq user.id and printedUserName eq 'false'}">
-																	<h5 class="name">${user.firstName} ${user.lastName}</h5>
+																<c:if
+																	test="${review.userId eq user.id and printedUserName eq 'false'}">
+																	<h5 class="name">${user.firstName}
+																		${user.lastName}</h5>
 																	<c:set var="printedUserName" value="true" />
 																</c:if>
 															</c:forEach>
@@ -359,9 +370,12 @@
 									<!-- Review Form -->
 									<div class="col-md-3">
 										<div id="review-form">
-											<form class="review-form" action="review-product" method="post">
-												
-												<textarea class="input" name="review" placeholder="Your Review"></textarea>
+											<form class="review-form" action="review-product"
+												method="post">
+												<input type="hidden" name="csrfToken" value="<%=csrfToken%>" />
+
+												<textarea class="input" name="review"
+													placeholder="Your Review"></textarea>
 												<div class="input-rating">
 													<span>Your Rating: </span>
 													<div class="stars">
@@ -433,14 +447,14 @@
 									</div>
 								</div>
 							</a>
-							
+
 							<div class="product-body">
 								<c:forEach var="category" items="${categoryList}">
 									<c:if test="${product.categoryId eq category.id}">
 										<p class="product-category">${category.name}</p>
 									</c:if>
 								</c:forEach>
-	
+
 								<h3 class="product-name">
 									<a href="#">${product.name}</a>
 								</h3>
@@ -461,11 +475,11 @@
 					</div>
 					<!-- /product -->
 				</c:forEach>
-				
+
 
 			</div>
 			<!-- /row -->
-			
+
 		</div>
 		<!-- /container -->
 	</div>
